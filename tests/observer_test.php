@@ -166,12 +166,15 @@ final class observer_test extends \advanced_testcase {
     }
 
     /**
-     * A user_enrolments row for the test student on the notificationeabc instance.
+     * A user_enrolments row for the test student on the manual enrol instance
+     * (the event objectid only needs to reference an existing enrolment row;
+     * the observer resolves the notificationeabc instance by course).
      */
     protected function ue_record(): \stdClass {
         global $DB;
+        $manual = $DB->get_record('enrol', ['courseid' => $this->course->id, 'enrol' => 'manual'], '*', MUST_EXIST);
         return $DB->get_record('user_enrolments',
-            ['enrolid' => $this->instance->id, 'userid' => $this->student->id], '*', MUST_EXIST);
+            ['enrolid' => $manual->id, 'userid' => $this->student->id], '*', MUST_EXIST);
     }
 
     /**

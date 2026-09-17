@@ -60,13 +60,16 @@ class enrol_notificationeabc_observer
         }
 
         $course = $DB->get_record('course', ['id' => $event->courseid]);
+        if (empty($course)) {
+            return;
+        }
         // Not set message for hidden courses.
         if (!$course->visible && !$pluginconfig->includehiddencourses) {
             return;
         }
 
         $user = $DB->get_record('user', ['id' => $event->relateduserid]);
-        if ($user->deleted || $user->suspended) {
+        if (empty($user) || $user->deleted || $user->suspended) {
             return;
         }
 
@@ -123,13 +126,16 @@ class enrol_notificationeabc_observer
         }
 
         $course = $DB->get_record('course', ['id' => $event->courseid]);
+        if (empty($course)) {
+            return;
+        }
         // Not set message for hidden courses.
         if (!$course->visible && !$pluginconfig->includehiddencourses) {
             return;
         }
 
         $user = $DB->get_record('user', ['id' => $event->relateduserid]);
-        if ($user->deleted || $user->suspended) {
+        if (empty($user) || $user->deleted || $user->suspended) {
             return;
         }
 
@@ -148,7 +154,7 @@ class enrol_notificationeabc_observer
 
             // Plugin instance in course.
             $enrol = $DB->get_record('enrol', ['enrol' => 'notificationeabc', 'courseid' => $event->courseid]);
-            $enrollment = $DB->get_record('user_enrolments', ['id' => $event->objectid]);
+            $enrollment = $DB->get_record('user_enrolments', ['id' => $event->objectid]) ?: null;
 
             if (!empty($enrol)) {
                 // Per instance decision: send only when the instance is enabled and
@@ -188,13 +194,16 @@ class enrol_notificationeabc_observer
         }
 
         $course = $DB->get_record('course', ['id' => $event->courseid]);
+        if (empty($course)) {
+            return;
+        }
         // Not set message for hidden courses.
         if (!$course->visible && !$pluginconfig->includehiddencourses) {
             return;
         }
 
         $user = $DB->get_record('user', ['id' => $event->relateduserid]);
-        if ($user->deleted || $user->suspended) {
+        if (empty($user) || $user->deleted || $user->suspended) {
             return;
         }
 
@@ -213,7 +222,7 @@ class enrol_notificationeabc_observer
             $notificationeabc = new enrol_notificationeabc_plugin();
 
             $enrol = $DB->get_record('enrol', ['enrol' => 'notificationeabc', 'courseid' => $event->courseid]);
-            $enrollment = $DB->get_record('user_enrolments', ['id' => $event->objectid]);
+            $enrollment = $DB->get_record('user_enrolments', ['id' => $event->objectid]) ?: null;
 
             if (!empty($enrol)) {
                 // Per instance decision: send only when the instance is enabled and
