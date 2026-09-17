@@ -15,9 +15,7 @@ Feature: Enrol Notification instances
   @javascript
   Scenario: Add a notificationeabc enrolment method and save it
     Given I am on the "Course 1" course page logged in as "admin"
-    And I navigate to "Participants > Enrolment methods" in current page administration
-    And I select "Enrol Notification" from the "Add method" singleselect
-    And I set the field "Custom instance name" to "Notify me"
-    And I press "Save changes"
+    And I add "Enrol Notification" enrolment method in "Course 1" with:
+      | Custom instance name | Notify me |
     Then I should see "Notify me"
     And I should see "Enrol Notification"
