@@ -256,7 +256,7 @@ final class observer_test extends \advanced_testcase {
         set_config('globalenrolalert', '1', 'enrol_notificationeabc');
         $message = $this->fire_enrolled((int)$manual2->id, null, (int)$course2->id);
         $this->assertNotNull($message);
-        $this->assertSame($this->student->id, (int)$message->useridto);
+        $this->assertSame((int)$this->student->id, (int)$message->useridto);
         $sink->clear();
         $sink->close();
     }
@@ -294,7 +294,7 @@ final class observer_test extends \advanced_testcase {
 
         $message = $this->fire_unenrolled((int)$ue->id, $uerow);
         $this->assertNotNull($message);
-        $this->assertSame('Enrol email notification', $message->subject);
+        $this->assertSame('Enrolment email notification', $message->subject);
     }
 
     /**
