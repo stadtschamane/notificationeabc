@@ -122,15 +122,15 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         } else {
             // Plugin site configuration level.
 
-            if (!$enrolmessage = $pluginconfig->enrolmessage) {
+            if (!$enrolmessage = ($pluginconfig->enrolmessage ?? '')) {
                 $enrolmessage = get_string('enrolmessagedefault', 'enrol_notificationeabc', $course);
             }
 
-            if (!$unenrolmessage = $pluginconfig->unenrolmessage) {
+            if (!$unenrolmessage = ($pluginconfig->unenrolmessage ?? '')) {
                 $unenrolmessage = get_string('unenrolmessagedefault', 'enrol_notificationeabc', $course);
             }
 
-            if (!$enrolupdatemessage = $pluginconfig->enrolupdatemessage) {
+            if (!$enrolupdatemessage = ($pluginconfig->enrolupdatemessage ?? '')) {
                 $enrolupdatemessage = get_string('enrolupdatemessagedefault', 'enrol_notificationeabc', $course);
             }
         }

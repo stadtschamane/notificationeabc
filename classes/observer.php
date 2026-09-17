@@ -47,7 +47,7 @@ class enrol_notificationeabc_observer
         global $DB;
 
         $pluginconfig = get_config('enrol_notificationeabc');
-        $unenrolalert = $pluginconfig->unenrolalert;
+        $unenrolalert = $pluginconfig->unenrolalert ?? '';
 
         // Site level switch: master on/off for unenrol notifications.
         if (!$unenrolalert) {
@@ -64,7 +64,7 @@ class enrol_notificationeabc_observer
             return;
         }
         // Not set message for hidden courses.
-        if (!$course->visible && !$pluginconfig->includehiddencourses) {
+        if (!$course->visible && empty($pluginconfig->includehiddencourses)) {
             return;
         }
 
@@ -97,7 +97,7 @@ class enrol_notificationeabc_observer
                 }
             } else {
                 // No instance in the course: fall back to the global site setting.
-                $activeglobal = $pluginconfig->globalunenrolalert;
+                $activeglobal = $pluginconfig->globalunenrolalert ?? '';
                 if ($activeglobal == 1) {
                     $notificationeabc->send_email($user, $course, 2);
                 }
@@ -113,7 +113,7 @@ class enrol_notificationeabc_observer
         global $DB;
 
         $pluginconfig = get_config('enrol_notificationeabc');
-        $enrolupdatealert = $pluginconfig->enrolupdatealert;
+        $enrolupdatealert = $pluginconfig->enrolupdatealert ?? '';
 
         // Site level switch: master on/off for enrol update notifications.
         if (!$enrolupdatealert) {
@@ -130,7 +130,7 @@ class enrol_notificationeabc_observer
             return;
         }
         // Not set message for hidden courses.
-        if (!$course->visible && !$pluginconfig->includehiddencourses) {
+        if (!$course->visible && empty($pluginconfig->includehiddencourses)) {
             return;
         }
 
@@ -165,7 +165,7 @@ class enrol_notificationeabc_observer
                 }
             } else {
                 // No instance in the course: fall back to the global site setting.
-                $activeglobal = $pluginconfig->globalenrolupdatealert;
+                $activeglobal = $pluginconfig->globalenrolupdatealert ?? '';
                 if ($activeglobal == 1) {
                     $notificationeabc->send_email($user, $course, 3, null, $enrollment);
                 }
@@ -181,7 +181,7 @@ class enrol_notificationeabc_observer
         global $DB;
 
         $pluginconfig = get_config('enrol_notificationeabc');
-        $enrolalert = $pluginconfig->enrolalert;
+        $enrolalert = $pluginconfig->enrolalert ?? '';
 
         // Site level switch: master on/off for enrol notifications.
         if (!$enrolalert) {
@@ -198,7 +198,7 @@ class enrol_notificationeabc_observer
             return;
         }
         // Not set message for hidden courses.
-        if (!$course->visible && !$pluginconfig->includehiddencourses) {
+        if (!$course->visible && empty($pluginconfig->includehiddencourses)) {
             return;
         }
 
@@ -234,7 +234,7 @@ class enrol_notificationeabc_observer
 
             } else {
                 // No instance in the course: fall back to the global site setting.
-                $activeglobal = $pluginconfig->globalenrolalert;
+                $activeglobal = $pluginconfig->globalenrolalert ?? '';
                 if ($activeglobal == 1) {
                     $notificationeabc->send_email($user, $course, 1, null, $enrollment);
                 }

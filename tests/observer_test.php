@@ -139,7 +139,7 @@ final class observer_test extends \advanced_testcase {
             'courseid' => $courseid ?? $this->course->id,
             'context' => \context_course::instance($courseid ?? $this->course->id),
             'relateduserid' => ($user ?? $this->student)->id,
-            'other' => ['userenrolment' => $ue, 'enrol' => 'notificationeabc'],
+            'other' => ['userenrolment' => array_merge((array)$ue, ['lastenrol' => true]), 'enrol' => 'notificationeabc'],
         ]);
         $event->trigger();
         $messages = $sink->get_messages_by_component_and_type('enrol_notificationeabc', 'notificationeabc_enrolment');
