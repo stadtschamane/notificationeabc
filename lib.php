@@ -440,6 +440,31 @@ class enrol_notificationeabc_plugin extends enrol_plugin
     }
 
     /**
+     * Is it possible to add a new enrol instance via the standard enrol UI?
+     *
+     * Required for the "Add instance" dropdown in core enrol/instances.php
+     * when use_standard_editing_ui() is true. One instance per course.
+     *
+     * @param int $courseid
+     * @return bool
+     */
+    public function can_add_instance($courseid) {
+        global $DB;
+
+        $context = context_course::instance($courseid, MUST_EXIST);
+        if (!has_capability('moodle/course:enrolconfig', $context) or !has_capability('enrol/notificationeabc:config', $context)) {
+            return false;
+        }
+
+        if ($DB->record_exists('enrol', ['courseid' => $courseid, 'enrol' => $this->get_name()])) {
+            // Multiple instances not supported.
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Return an array of valid options for the status.
      *
      * @return array
