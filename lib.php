@@ -205,15 +205,18 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         }
 
         // Mobile message: short plain text summary derived from the type.
+        // The *messagedefault strings expect {$a->fullname} and {$a->url}, so the
+        // course object is passed as $a (course->url is set at the top of this
+        // method); passing the send-log data here would render empty placeholders.
         switch ((int)$type) {
             case 1:
-                $smallmessage = get_string('enrolmessagedefault', 'enrol_notificationeabc', $strdata);
+                $smallmessage = get_string('enrolmessagedefault', 'enrol_notificationeabc', $course);
                 break;
             case 2:
-                $smallmessage = get_string('unenrolmessagedefault', 'enrol_notificationeabc', $strdata);
+                $smallmessage = get_string('unenrolmessagedefault', 'enrol_notificationeabc', $course);
                 break;
             case 3:
-                $smallmessage = get_string('enrolupdatemessagedefault', 'enrol_notificationeabc', $strdata);
+                $smallmessage = get_string('enrolupdatemessagedefault', 'enrol_notificationeabc', $course);
                 break;
             default:
                 $smallmessage = '';
