@@ -154,6 +154,47 @@ class enrol_notificationeabc_plugin extends enrol_plugin
 
         $supportuser = \core_user::get_support_user();
 
+        $strdata = new stdClass();
+        $strdata->username = $user->username;
+        $strdata->coursename = $course->fullname;
+
+        // Per type subject: use the site level subjectenrol/subjectunenrol/
+        // subjectupdate settings, falling back to the generic subject string.
+        switch ((int)$type) {
+            case 1:
+                $subject = !empty($pluginconfig->subjectenrol)
+                    ? $pluginconfig->subjectenrol : get_string('subject', 'enrol_notificationeabc');
+                break;
+            case 2:
+                $subject = !empty($pluginconfig->subjectunenrol)
+                    ? $pluginconfig->subjectunenrol : get_string('subject', 'enrol_notificationeabc');
+                break;
+            case 3:
+                $subject = !empty($pluginconfig->subjectupdate)
+                    ? $pluginconfig->subjectupdate : get_string('subject', 'enrol_notificationeabc');
+                break;
+            default:
+                $subject = get_string('subject', 'enrol_notificationeabc');
+        }
+
+        // Mobile message: short plain text summary derived from the type.
+        switch ((int)$type) {
+            case 1:
+                $smallmessage = get_string('enrolmessagedefault', 'enrol_notificationeabc', $strdata);
+                break;
+            case 2:
+                $smallmessage = get_string('unenrolmessagedefault', 'enrol_notificationeabc', $strdata);
+                break;
+            case 3:
+                $smallmessage = get_string('enrolupdatemessagedefault', 'enrol_notificationeabc', $strdata);
+                break;
+            default:
+                $smallmessage = '';
+        }
+        if (empty($smallmessage)) {
+            $smallmessage = $course->fullname;
+        }
+
         $eventdata = new \core\message\message();
         $eventdata->courseid = $course->id;
         $eventdata->modulename = 'moodle';
@@ -161,14 +202,11 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         $eventdata->name = 'notificationeabc_enrolment';
         $eventdata->userfrom = $supportuser;
         $eventdata->userto = $user->id;
-        $eventdata->subject = get_string('subject', 'enrol_notificationeabc');
-        $eventdata->fullmessage = '';
+        $eventdata->subject = $subject;
+        $eventdata->fullmessage = function_exists('html_to_text') ? html_to_text($message) : strip_tags($message);
         $eventdata->fullmessageformat = FORMAT_HTML;
         $eventdata->fullmessagehtml = $message;
-        $eventdata->smallmessage = '';
-        $strdata = new stdClass();
-        $strdata->username = $user->username;
-        $strdata->coursename = $course->fullname;
+        $eventdata->smallmessage = $smallmessage;
 
         if (message_send($eventdata)) {
             $this->log .= get_string('succefullsend', 'enrol_notificationeabc', $strdata);

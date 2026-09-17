@@ -95,6 +95,29 @@ if ($ADMIN->fulltree) {
         null)
     );
 
+    // Per type message subjects.
+    $settings->add(new admin_setting_configtext(
+        'enrol_notificationeabc/subjectenrol',
+        get_string('subjectenrol', 'enrol_notificationeabc'),
+        get_string('subjectenrol_help', 'enrol_notificationeabc'),
+        '',
+        PARAM_TEXT)
+    );
+    $settings->add(new admin_setting_configtext(
+        'enrol_notificationeabc/subjectunenrol',
+        get_string('subjectunenrol', 'enrol_notificationeabc'),
+        get_string('subjectunenrol_help', 'enrol_notificationeabc'),
+        '',
+        PARAM_TEXT)
+    );
+    $settings->add(new admin_setting_configtext(
+        'enrol_notificationeabc/subjectupdate',
+        get_string('subjectupdate', 'enrol_notificationeabc'),
+        get_string('subjectupdate_help', 'enrol_notificationeabc'),
+        '',
+        PARAM_TEXT)
+    );
+
     // Include hidden courses.
     $settings->add(new admin_setting_configcheckbox(
         'enrol_notificationeabc/includehiddencourses',
