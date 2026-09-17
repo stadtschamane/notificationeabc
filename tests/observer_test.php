@@ -90,6 +90,10 @@ final class observer_test extends \advanced_testcase {
         $fields['customint3'] = 1;
         $fields['customchar1'] = '';
         $fields['customchar2'] = '';
+        // The instance must be ENABLED for the observers to notify (the
+        // notificationeabc instance is a passive block, but the send decision
+        // requires status == ENROL_INSTANCE_ENABLED).
+        $fields['status'] = ENROL_INSTANCE_ENABLED;
         $id = $plugin->add_instance($this->course, $fields);
         $this->instance = $DB->get_record('enrol', ['id' => $id], '*', MUST_EXIST);
 
@@ -139,7 +143,11 @@ final class observer_test extends \advanced_testcase {
             'courseid' => $courseid ?? $this->course->id,
             'context' => \context_course::instance($courseid ?? $this->course->id),
             'relateduserid' => ($user ?? $this->student)->id,
-            'other' => ['userenrolment' => array_merge((array)$ue, ['lastenrol' => true]), 'enrol' => 'notificationeabc'],
+            'other' => ['userenrolment' => array_merge((array)$ue, [
+                'courseid' => $courseid ?? $this->course->id,
+                'enrol' => 'notificationeabc',
+                'lastenrol' => true,
+            ]), 'enrol' => 'notificationeabc'],
         ]);
         $event->trigger();
         $messages = $sink->get_messages_by_component_and_type('enrol_notificationeabc', 'notificationeabc_enrolment');
@@ -248,7 +256,7 @@ final class observer_test extends \advanced_testcase {
         set_config('globalenrolalert', '1', 'enrol_notificationeabc');
         $message = $this->fire_enrolled((int)$manual2->id, null, (int)$course2->id);
         $this->assertNotNull($message);
-        $this->assertSame($course2->id, (int)$message->courseid);
+        $this->assertSame($this->student->id, (int)$message->useridto);
         $sink->clear();
         $sink->close();
     }
