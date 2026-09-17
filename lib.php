@@ -154,6 +154,33 @@ class enrol_notificationeabc_plugin extends enrol_plugin
 
         $supportuser = \core_user::get_support_user();
 
+        // Never mutate the support user: build the sender on a clone.
+        $sender = clone $supportuser;
+
+        // Sender email precedence: instance customchar1 override, then the site
+        // emailsender setting, then the support user email. An empty/absent
+        // override must never produce an empty From address.
+        $emailsender = get_config('enrol_notificationeabc', 'emailsender');
+        if ($enrol && !empty($enrol->customchar1)) {
+            $sender->email = $enrol->customchar1;
+        } else if (!empty($emailsender)) {
+            $sender->email = $emailsender;
+        }
+
+        // Sender name precedence: instance customchar2 override, then the site
+        // namesender setting, then the support user name.
+        $namesender = get_config('enrol_notificationeabc', 'namesender');
+        if ($enrol && !empty($enrol->customchar2)) {
+            $sendername = $enrol->customchar2;
+        } else if (!empty($namesender)) {
+            $sendername = $namesender;
+        } else {
+            $sendername = fullname($supportuser);
+        }
+        $nameparts = explode(' ', trim($sendername), 2);
+        $sender->firstname = $nameparts[0];
+        $sender->lastname = isset($nameparts[1]) ? $nameparts[1] : '';
+
         $strdata = new stdClass();
         $strdata->username = $user->username;
         $strdata->coursename = $course->fullname;
@@ -200,7 +227,7 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         $eventdata->modulename = 'moodle';
         $eventdata->component = 'enrol_notificationeabc';
         $eventdata->name = 'notificationeabc_enrolment';
-        $eventdata->userfrom = $supportuser;
+        $eventdata->userfrom = $sender;
         $eventdata->userto = $user->id;
         $eventdata->subject = $subject;
         $eventdata->fullmessage = function_exists('html_to_text') ? html_to_text($message) : strip_tags($message);

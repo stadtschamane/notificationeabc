@@ -25,6 +25,8 @@
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
 
+$string['emailsender'] = 'Sender email address';
+$string['emailsender_help'] = 'Email address used as the sender when no per-instance sender is set. Leave empty to use the Moodle support user.';
 $string['enrolalert'] = 'Enable enrol message';
 $string['enrolalert_help'] = 'Enable enrol message';
 $string['enrolmessage'] = 'Custom enrol message';
@@ -69,6 +71,8 @@ $string['globalunenrolalert_help'] = 'Site wide unenrol message';
 $string['includehiddencourses'] = 'Include hidden courses';
 $string['includehiddencourses_help'] = 'Include hidden courses when handling registration changes for sending messages.';
 $string['messageprovider:notificationeabc_enrolment'] = 'Enrol email notification messages';
+$string['namesender'] = 'Sender name';
+$string['namesender_help'] = 'Name used as the sender when no per-instance sender name is set. Leave empty to use the Moodle support user name.';
 $string['notificationeabc:config'] = 'Configure email notificationeabc instances';
 $string['notificationeabc:manage'] = 'Manage email notificationeabc';
 $string['pluginname'] = 'Enrol notification';

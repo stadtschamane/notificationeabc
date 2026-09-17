@@ -25,6 +25,8 @@
  * @author     Osvaldo Arriola <osvaldo@e-abclearning.com>
  */
 
+$string['emailsender'] = 'Dirección de correo del remitente';
+$string['emailsender_help'] = 'Dirección de correo utilizada como remitente cuando no se establece un remitente por instancia. Déjela vacía para usar el usuario de soporte de Moodle.';
 $string['enrolalert'] = 'Activar aviso de matriculación';
 $string['enrolalert_help'] = 'Activar aviso de matriculación';
 $string['enrolmessage'] = 'Mensaje personalizado';
@@ -59,6 +61,8 @@ $string['globalunenrolalert_help'] = 'Activar la notificacion de desmatriculacio
 $string['includehiddencourses'] = 'Incluir cursos ocultos';
 $string['includehiddencourses_help'] = 'Incluir los cursos ocultos al momento de atender los cambios en las matrículas para el envío de los mensajes.';
 $string['messageprovider:notificationeabc_enrolment'] = 'Enrol notification messages';
+$string['namesender'] = 'Nombre del remitente';
+$string['namesender_help'] = 'Nombre utilizado como remitente cuando no se establece un nombre de remitente por instancia. Déjelo vacío para usar el nombre del usuario de soporte de Moodle.';
 $string['notificationeabc:manage'] = 'Gestionar notificaciones de matriculación';
 $string['pluginname'] = 'Notificación de Matriculación';
 $string['status'] = 'Activar notification de matriculación';

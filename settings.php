@@ -118,6 +118,22 @@ if ($ADMIN->fulltree) {
         PARAM_TEXT)
     );
 
+    // Sender settings. Empty values fall back to the support user.
+    $settings->add(new admin_setting_configtext(
+        'enrol_notificationeabc/emailsender',
+        get_string('emailsender', 'enrol_notificationeabc'),
+        get_string('emailsender_help', 'enrol_notificationeabc'),
+        '',
+        PARAM_TEXT)
+    );
+    $settings->add(new admin_setting_configtext(
+        'enrol_notificationeabc/namesender',
+        get_string('namesender', 'enrol_notificationeabc'),
+        get_string('namesender_help', 'enrol_notificationeabc'),
+        '',
+        PARAM_TEXT)
+    );
+
     // Include hidden courses.
     $settings->add(new admin_setting_configcheckbox(
         'enrol_notificationeabc/includehiddencourses',
