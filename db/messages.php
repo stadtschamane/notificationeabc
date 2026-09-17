@@ -29,7 +29,11 @@ defined('MOODLE_INTERNAL') || die();
 
 $messageproviders = array (
 
-    'notificationeabc_enrolment' => array(),
+    'notificationeabc_enrolment' => array(
+        'defaults' => array(
+            'email' => 1,
+        ),
+    ),
 
 );
 
