@@ -45,6 +45,43 @@ class enrol_notificationeabc_plugin extends enrol_plugin
     /** @var log.*/
     private $log = '';
 
+    /**
+     * Static per-request guard holding the user|course|type combinations that have
+     * already been notified during the current request/CLI run.
+     *
+     * Bulk operations (e.g. the user enrolment bulk import) fire both
+     * user_enrolment_created and user_enrolment_updated events for the same
+     * enrolment, which would otherwise produce duplicate notifications.
+     *
+     * @var array
+     */
+    private static $sentnotifications = [];
+
+    /**
+     * Check whether a notification for this user+course+type has already been sent
+     * during the current request/CLI run. Pure check, does not register anything.
+     *
+     * @param int $userid
+     * @param int $courseid
+     * @param int $type
+     * @return bool true if the combination was already notified
+     */
+    public static function is_duplicate_notification(int $userid, int $courseid, int $type): bool {
+        return isset(self::$sentnotifications[$userid . '|' . $courseid . '|' . $type]);
+    }
+
+    /**
+     * Register that a notification for this user+course+type has been sent during
+     * the current request/CLI run, so any duplicate event is silently suppressed.
+     *
+     * @param int $userid
+     * @param int $courseid
+     * @param int $type
+     */
+    public static function mark_notification_sent(int $userid, int $courseid, int $type): void {
+        self::$sentnotifications[$userid . '|' . $courseid . '|' . $type] = true;
+    }
+
     // Funcion que envia las notificaciones a los usuarios.
 
     /**
@@ -58,6 +95,16 @@ class enrol_notificationeabc_plugin extends enrol_plugin
      */
     public function send_email(stdClass $user, stdClass $course, int $type, stdClass $enrol = null, stdClass $enrollment = null) {
         global $CFG;
+
+        // Deduplicate: the same user+course+type must not be notified twice within a
+        // single request/CLI run (bulk operations fire several enrolment events).
+        // The check happens BEFORE any message building so the suppressed duplicate
+        // does no work. Returning false here intentionally does NOT log a failure:
+        // this is a silent skip, distinct from a real send error.
+        if (self::is_duplicate_notification($user->id, $course->id, (int)$type)) {
+            return false;
+        }
+        self::mark_notification_sent($user->id, $course->id, (int)$type);
 
         $course->url = $CFG->wwwroot . '/course/view.php?id=' . $course->id;
 

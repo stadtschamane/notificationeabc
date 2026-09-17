@@ -49,7 +49,13 @@ class enrol_notificationeabc_observer
         $pluginconfig = get_config('enrol_notificationeabc');
         $unenrolalert = $pluginconfig->unenrolalert;
 
+        // Site level switch: master on/off for unenrol notifications.
         if (!$unenrolalert) {
+            return;
+        }
+
+        // Skip duplicates for the same user+course+type within this request/CLI run.
+        if (enrol_notificationeabc_plugin::is_duplicate_notification($event->relateduserid, $event->courseid, 2)) {
             return;
         }
 
@@ -79,20 +85,17 @@ class enrol_notificationeabc_observer
 
             $enrol = $DB->get_record('enrol', ['enrol' => 'notificationeabc', 'courseid' => $event->courseid]);
 
-            // Use course settings.
             if (!empty($enrol)) {
-                // Check the instance status: status = 0 enabled and status = 1 disabled.
-                if (!empty($enrol) && !empty($unenrolalert) && !$enrol->status) {
-                    // If the instance has a customint2 value, send the email to the user.
-                    // Otherwise, the message was disabled in the course level.
-                    if ($enrol->customint2) {
-                        $notificationeabc->send_email($user, $course, 2, $enrol);
-                    }
+                // Per instance decision: send only when the instance is enabled and
+                // the matching customint2 toggle is set. Otherwise the message was
+                // disabled at course level and no notification is sent.
+                if ($enrol->status == ENROL_INSTANCE_ENABLED && !empty($enrol->customint2)) {
+                    $notificationeabc->send_email($user, $course, 2, $enrol);
                 }
             } else {
-                $activeglobal = $pluginconfig->globalenrolalert;
+                // No instance in the course: fall back to the global site setting.
+                $activeglobal = $pluginconfig->globalunenrolalert;
                 if ($activeglobal == 1) {
-                    // Use global settings.
                     $notificationeabc->send_email($user, $course, 2);
                 }
             }
@@ -109,7 +112,13 @@ class enrol_notificationeabc_observer
         $pluginconfig = get_config('enrol_notificationeabc');
         $enrolupdatealert = $pluginconfig->enrolupdatealert;
 
+        // Site level switch: master on/off for enrol update notifications.
         if (!$enrolupdatealert) {
+            return;
+        }
+
+        // Skip duplicates for the same user+course+type within this request/CLI run.
+        if (enrol_notificationeabc_plugin::is_duplicate_notification($event->relateduserid, $event->courseid, 3)) {
             return;
         }
 
@@ -142,18 +151,15 @@ class enrol_notificationeabc_observer
             $enrollment = $DB->get_record('user_enrolments', ['id' => $event->objectid]);
 
             if (!empty($enrol)) {
-                // Check the instance status: status = 0 enabled and status = 1 disabled.
-                if (!empty($enrolupdatealert) && !$enrol->status) {
-                    // Customint3 = 1 is notification enabled; customint3 = 0 is notification disabled.
-                    // If the instance has a customint3 value, send the email to the user.
-                    // Otherwise, the message was disabled in the course level.
-                    if ($enrol->customint3) {
-                        $notificationeabc->send_email($user, $course, 3, $enrol, $enrollment);
-                    }
+                // Per instance decision: send only when the instance is enabled and
+                // the matching customint3 toggle is set (customint3 = 1 notification
+                // enabled, customint3 = 0 notification disabled at course level).
+                if ($enrol->status == ENROL_INSTANCE_ENABLED && !empty($enrol->customint3)) {
+                    $notificationeabc->send_email($user, $course, 3, $enrol, $enrollment);
                 }
             } else {
-
-                $activeglobal = $pluginconfig->globalenrolalert;
+                // No instance in the course: fall back to the global site setting.
+                $activeglobal = $pluginconfig->globalenrolupdatealert;
                 if ($activeglobal == 1) {
                     $notificationeabc->send_email($user, $course, 3, null, $enrollment);
                 }
@@ -171,7 +177,13 @@ class enrol_notificationeabc_observer
         $pluginconfig = get_config('enrol_notificationeabc');
         $enrolalert = $pluginconfig->enrolalert;
 
+        // Site level switch: master on/off for enrol notifications.
         if (!$enrolalert) {
+            return;
+        }
+
+        // Skip duplicates for the same user+course+type within this request/CLI run.
+        if (enrol_notificationeabc_plugin::is_duplicate_notification($event->relateduserid, $event->courseid, 1)) {
             return;
         }
 
@@ -204,18 +216,15 @@ class enrol_notificationeabc_observer
             $enrollment = $DB->get_record('user_enrolments', ['id' => $event->objectid]);
 
             if (!empty($enrol)) {
-                // Check the instance status.
-                // Legend: status = 0 enabled; status = 1 disabled.
-                if (!empty($enrolalert) && !$enrol->status) {
-                    // Customint3 = 1 is notification enabled; customint3 = 0 is notification disabled.
-                    // If the instance has a customint3 value, send the email to the user.
-                    // Otherwise, the message was disabled in the course level.
-                    if ($enrol->customint1) {
-                        $notificationeabc->send_email($user, $course, 1, $enrol, $enrollment);
-                    }
+                // Per instance decision: send only when the instance is enabled and
+                // the matching customint1 toggle is set (customint1 = 1 notification
+                // enabled, customint1 = 0 notification disabled at course level).
+                if ($enrol->status == ENROL_INSTANCE_ENABLED && !empty($enrol->customint1)) {
+                    $notificationeabc->send_email($user, $course, 1, $enrol, $enrollment);
                 }
 
             } else {
+                // No instance in the course: fall back to the global site setting.
                 $activeglobal = $pluginconfig->globalenrolalert;
                 if ($activeglobal == 1) {
                     $notificationeabc->send_email($user, $course, 1, null, $enrollment);
