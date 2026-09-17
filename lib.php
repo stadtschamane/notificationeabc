@@ -260,24 +260,31 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         $url = new moodle_url($CFG->wwwroot . '/course/view.php', ['id' => $course->id]);
         $m = str_replace('{URL}', $url, $m);
 
-        // Course fields.
-        $coursefields = ['fullname', 'shortname', 'idnumber', 'startdate', 'enddate'];
-        foreach ($coursefields as $field) {
+        // Course name fields: render/escape for HTML context.
+        $coursenamefields = ['fullname', 'shortname'];
+        foreach ($coursenamefields as $field) {
+            $m = str_replace('{COURSE' . strtoupper($field) . '}', format_string($course->$field), $m);
+        }
+
+        // Other course fields.
+        $m = str_replace('{COURSEIDNUMBER}', s($course->idnumber), $m);
+
+        // Course date fields (userdate output is already safe plain text).
+        $coursedatefields = ['startdate', 'enddate'];
+        foreach ($coursedatefields as $field) {
             $value = $course->$field;
-            if ($field == 'startdate' || $field == 'enddate') {
-                if ($value > 0) {
-                    $value = userdate($value);
-                } else {
-                    $value = get_string('never');
-                }
+            if ($value > 0) {
+                $value = userdate($value);
+            } else {
+                $value = get_string('never');
             }
             $m = str_replace('{COURSE' . strtoupper($field) . '}', $value, $m);
         }
 
-        // User fields.
+        // User fields: escape for HTML context.
         $userfields = ['username', 'idnumber', 'firstname', 'lastname', 'email', 'city', 'country'];
         foreach ($userfields as $field) {
-            $m = str_replace('{' . strtoupper($field) . '}', $user->$field, $m);
+            $m = str_replace('{' . strtoupper($field) . '}', s($user->$field), $m);
         }
 
         $userprofilefields = profile_get_custom_fields($user->id);
@@ -294,7 +301,7 @@ class enrol_notificationeabc_plugin extends enrol_plugin
                     $value = userdate($value);
                 }
             }
-            $m = str_replace('{PROFILEFIELD_' . strtoupper($field->shortname) . '}', $value, $m);
+            $m = str_replace('{PROFILEFIELD_' . strtoupper($field->shortname) . '}', s($value), $m);
         }
 
         // Enrol fields.
@@ -311,9 +318,9 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         }
 
         // To old code compatibility.
-        $m = str_replace('{COURSENAME}', $course->fullname, $m);
-        $m = str_replace('{NOMBRE}', $user->firstname, $m);
-        $m = str_replace('{APELLIDO}', $user->lastname, $m);
+        $m = str_replace('{COURSENAME}', format_string($course->fullname), $m);
+        $m = str_replace('{NOMBRE}', s($user->firstname), $m);
+        $m = str_replace('{APELLIDO}', s($user->lastname), $m);
 
         return $m;
     }
