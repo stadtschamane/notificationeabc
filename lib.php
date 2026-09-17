@@ -529,6 +529,22 @@ class enrol_notificationeabc_plugin extends enrol_plugin
     }
 
     /**
+     * Normalise editor content: accept both the editor array form
+     * (['text' => string, 'format' => ...]) and a plain string, because
+     * programmatic callers (CLI, web services, tests) pass plain strings
+     * while the standard edit form passes the editor array.
+     *
+     * @param string|array $value Raw customtext value
+     * @return string Plain text content
+     */
+    protected static function editor_text($value): string {
+        if (is_array($value)) {
+            return (string)($value['text'] ?? '');
+        }
+        return (string)$value;
+    }
+
+    /**
      * Add instance method
      *
      * @param stdClass $course
@@ -560,9 +576,9 @@ class enrol_notificationeabc_plugin extends enrol_plugin
             $instance->$field = $value;
         }
 
-        $instance->customtext1 = $fields['customtext1']['text'];
-        $instance->customtext2 = $fields['customtext2']['text'];
-        $instance->customtext3 = $fields['customtext3']['text'];
+        $instance->customtext1 = self::editor_text($fields['customtext1'] ?? '');
+        $instance->customtext2 = self::editor_text($fields['customtext2'] ?? '');
+        $instance->customtext3 = self::editor_text($fields['customtext3'] ?? '');
 
         $instance->id = $DB->insert_record('enrol', $instance);
 
@@ -595,9 +611,9 @@ class enrol_notificationeabc_plugin extends enrol_plugin
         }
         $instance->timemodified = time();
 
-        $instance->customtext1 = $data->customtext1['text'];
-        $instance->customtext2 = $data->customtext2['text'];
-        $instance->customtext3 = $data->customtext3['text'];
+        $instance->customtext1 = self::editor_text($data->customtext1 ?? '');
+        $instance->customtext2 = self::editor_text($data->customtext2 ?? '');
+        $instance->customtext3 = self::editor_text($data->customtext3 ?? '');
 
         $update = $DB->update_record('enrol', $instance);
         if ($update) {
