@@ -92,3 +92,8 @@ jobs:
       - name: PHPUnit tests
         if: ${{ !cancelled() }}
         run: moodle-plugin-ci phpunit --fail-on-warning
+
+      - name: Behat features
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        run: moodle-plugin-ci behat --auto-rerun 2
