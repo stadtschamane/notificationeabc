@@ -76,6 +76,7 @@ $string['namesender_help'] = 'Name used as the sender when no per-instance sende
 $string['notificationeabc:config'] = 'Configure email notificationeabc instances';
 $string['notificationeabc:manage'] = 'Manage email notificationeabc';
 $string['pluginname'] = 'Enrol notification';
+$string['privacy:metadata'] = 'The enrol_notificationeabc plugin does not store any personal data.';
 $string['status'] = 'Active email notification';
 $string['subject'] = 'Enrolment email notification';
 $string['subjectenrol'] = 'Enrol message subject';

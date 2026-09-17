@@ -65,6 +65,7 @@ $string['namesender'] = 'Nombre del remitente';
 $string['namesender_help'] = 'Nombre utilizado como remitente cuando no se establece un nombre de remitente por instancia. Déjelo vacío para usar el nombre del usuario de soporte de Moodle.';
 $string['notificationeabc:manage'] = 'Gestionar notificaciones de matriculación';
 $string['pluginname'] = 'Notificación de Matriculación';
+$string['privacy:metadata'] = 'El plugin enrol_notificationeabc no almacena ningún dato personal.';
 $string['status'] = 'Activar notification de matriculación';
 $string['subject'] = 'Notificación de Matriculación';
 $string['subjectenrol'] = 'Asunto del mensaje de matriculación';
