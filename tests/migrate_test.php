@@ -25,6 +25,8 @@
 
 namespace enrol_notificationeabc;
 
+use enrol_notificationeabc_plugin;
+
 /**
  * Tests for the one-shot legacy layout repair in db/migrate.php.
  *
@@ -46,9 +48,20 @@ final class migrate_test extends \advanced_testcase {
     }
 
     /**
+     * The migration writes config rows and enrol rows without being wrapped
+     * in a test transaction; declare that up front so the reset machinery
+     * does not flag "unexpected database modification".
+     */
+    protected function setUp(): void {
+        $this->preventResetByRollback();
+        parent::setUp();
+        $this->resetAfterTest();
+    }
+
+    /**
      * Insert an enrol row with explicit customint values.
      */
-    protected function make_instance(array $ints, bool $legacy = true): \stdClass {
+    protected function make_instance(array $ints): \stdClass {
         global $DB;
 
         $course = $this->getDataGenerator()->create_course();
@@ -154,6 +167,12 @@ final class migrate_test extends \advanced_testcase {
      * @covers ::enrol_notificationeabc_migrate_legacy_settings
      */
     public function test_site_config_keys_are_migrated_without_overwrites(): void {
+        global $DB;
+
+        // Remove any rows the fresh-install defaults wrote, so this test
+        // exercises the legacy-key path deterministically.
+        $DB->delete_records('config_plugins', ['plugin' => 'enrol_notificationeabc']);
+
         // Old keys present (as a site upgraded from e-ABC would have).
         set_config('activeenrolalert', '1', 'enrol_notificationeabc');
         set_config('activarglobal', '1', 'enrol_notificationeabc');
