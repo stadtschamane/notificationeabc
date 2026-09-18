@@ -38,6 +38,14 @@ namespace enrol_notificationeabc;
 final class migrate_test extends \advanced_testcase {
 
     /**
+     * Load the migration code (normally included by the upgrade script).
+     */
+    public static function setUpBeforeClass(): void {
+        global $CFG;
+        require_once($CFG->dirroot . '/enrol/notificationeabc/db/migrate.php');
+    }
+
+    /**
      * Insert an enrol row with explicit customint values.
      */
     protected function make_instance(array $ints, bool $legacy = true): \stdClass {
