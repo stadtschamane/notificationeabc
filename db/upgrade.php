@@ -33,7 +33,19 @@ defined('MOODLE_INTERNAL') || die();
  * @return bool
  */
 function xmldb_enrol_notificationeabc_upgrade($oldversion) {
-    global $DB;
-    // $dbman = $DB->get_manager();
+    global $CFG;
+
+    // v4.5.0.2 (2026091701): repair the settings layout that silently changed
+    // across the 4.x maintenance. The e-ABC original (3.2.0.1) stored the
+    // per-instance alert toggles in customint3/4/5; the 4.x base reads them
+    // from customint1/2/3. Without this step, existing instances showed the
+    // old enrol-alert value as the update-alert toggle and vice versa.
+    // The same applies to renamed site-level config keys.
+    if ($oldversion < 2026091701) {
+        require_once($CFG->dirroot . '/enrol/notificationeabc/db/migrate.php');
+        enrol_notificationeabc_migrate_legacy_settings();
+        upgrade_plugin_savepoint(true, 2026091701, 'enrol', 'notificationeabc');
+    }
+
     return true;
 }
